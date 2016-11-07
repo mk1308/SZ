@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
+  <meta http-equiv="Content-Type" content="text/html; charset={{charset}}" />
+
+  <title>{{ title }}</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for( 'static', filename = stylesheet ) }}" />
+</head>
+
+<body style="background-color: rgb(238, 238, 238);">
+  <div class="o-global-wrapper" style="background: rgb(255,255,255);
+	    padding: 20px 80px 0 80px;
+	    width: 960px;
+	    margin: 0 auto 50px auto;
+	    position: relative;
+    ">
+    <ul class="c-nav">
+      <li class="c-nav__overview" style="margin:0;list-style-type:none">
+        <a href="{{ url_for( 'get_topic', topic=home ) }}">{{ home }}</a>
+      </li>
+
+      <li class="c-nav__next" style="margin:0;list-style-type:none">&nbsp; 
+        <a href="{{ url_for( 'get_article', article=next ) }}">nächster Artikel</a>
+      </li>
+    </ul>
+
+    <div class="c-article-header">
+      <h2><span class=
+      "c-article-header__kicker">{{ teaser }}</span><span class=
+      "c-article-header__headline">{{ title }}</span></h2>
+
+      <div class="c-article-header__text">
+        {% autoescape false %}
+        	  {{ initial }}
+        {% endautoescape %}
+      </div>
+
+      <p class="c-article-header__author">{{ author }}</p>
+    </div>
+
+    <div class="c-article-body">
+        {% autoescape false %}
+            {{ figure }}
+        	  {{ content  }}
+        {% endautoescape %}
+    </div>
+
+    <p class="c-pagina"><a href="{{ url_for( 'get_topic' ,topic = home ) }}">{{ home }}</a></p>
+
+    <p><a href="{{ url_for('index')}}">Zur
+    Ressortübersicht</a></p>
+  </div>
+</body>
+</html>
