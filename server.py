@@ -24,7 +24,7 @@ if __name__=='__main__':
   Webapp definieren und Appserver starten
   '''
   import os.path as p
-  from flask import Flask, url_for, send_from_directory, render_template, request
+  from flask import Flask, url_for, send_from_directory, render_template, request, redirect
   
   curdir = p.abspath('.')
   font_folder = '%s/%s/fonts' % ( curdir, dirname_tpl_res )
@@ -34,15 +34,9 @@ if __name__=='__main__':
   @app.route('/')
   def index():
     '''
-    Die SZ-Topics (TODO: Auslagern der speziellen Logik nach sz.py)
+    Lenkt auf die Topthemenseite
     '''
-    response = render_template( tpl_entry_page,
-        charset = "utf8",
-        stylesheet = url_for('static',filename='css/index_styles.css'), 
-        logo = url_for('static',filename='logo.png'),
-        articles = content['issues'].keys()     
-    ).encode('utf8')
-    return response
+    return redirect( url_for('get_topic', topic="Topthemen"))
 
   @app.route('/res/<path>')
   def static_proxy(path):

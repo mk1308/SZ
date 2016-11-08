@@ -31,7 +31,6 @@ class IndexPage( Content ):
       title=soup.title.getText(),
       charset='utf8',
       builtdate = soup.lastBuildDate.getText(),
-      logo = soup.image.url.getText(),
       stylesheet = self.stylesheet_name
     )
     articles = []
@@ -72,46 +71,57 @@ class ArticlePage( Content ):
 #        js_what_input = 'js/vendor/what-input.js',
 #        js_app = 'js/app.js'    
     )
+    # Den eigentlichen Content finden
     article = soup.article
-    authors = soup.find('section',{'class':"authors"})
-    authors.script.extract()
-    images = soup.find('section',{'class':'topenrichment'})
-    if images and images.figure:
-      figure = unicode( images.figure.renderContents().decode('utf8') )
-      args.update( figure = figure )  
+    
+    if self.has_more_pages:
+      # Textkörper finden 
+      body = article.find('section',{'id':'article-body'})
+      text_body = filter(lambda c : hasattr(c,'name') and (c.name=='p' or c.name=='h3'), body.children )
+      content = u''
+      for child in text_body:
+         content += child.prettify() 
+      self.dic['content']+=content
     else:
-      args.update( figure = '' )  
-    header = article.find( 'section',{'class':'header'} )
-    content = article.find('section',{'id':'article-body'})
-    
-    
-    args.update( author = authors.strong.get_text().strip() )
-    args.update( teaser=header.strong.get_text().strip() )
-    header.strong.extract()
-    args.update( title=header.h2.get_text().strip() )
-    
-    for p in article.findAll('p',{'class':'anzeige'}):
-      p.extract()
-    for p in soup.article.findAll('div',{'class','article-sidebar-wrapper'}):
-      p.extract()
-    for p in soup.article.findAll('div',{'class','basebox'}):
-      p.extract()
-    for p in soup.article.findAll('div',{'class','ad'}):
-      p.extract()
-    for p in soup.article.findAll('div',{'class','flexible-teaser'}):
-      p.extract()
-    for p in soup.article.findAll('figure'):
-      p.extract()
-    for p in soup.article.findAll('script'):
-      p.extract()
-    authors.extract()
-    content.span.extract()
-    content.span.extract()
-    
-    initial = content.p.extract()
-    args.update(initial=unicode(initial.renderContents().decode('utf8')))
-    args.update(content=unicode(content.renderContents().decode('utf8')))
-    self.dic.update(**args)
+      # Autoren finden und merken
+      authors = soup.find('section',{'class':"authors"})
+      authors.script.extract()
+      args.update( author = authors.strong.get_text().strip() )
+
+      # Das Bild zum Text finden
+      images = soup.find('section',{'class':'topenrichment'})
+      if images and images.figure:
+        figure = images.figure.prettify()
+        args.update( figure = figure )  
+      else:
+        args.update( figure = '' )  
+
+      # Überschrift finden
+      header = article.find( 'section',{'class':'header'} )
+      args.update( teaser=header.strong.get_text().strip() )
+      header.strong.extract()
+      args.update( title=header.h2.get_text().strip() )
+
+      # Textkörper finden und ersten Absatz hervorheben
+      body = article.find('section',{'id':'article-body'})
+      text_body = filter(lambda c : hasattr(c,'name') and (c.name=='p' or c.name=='h3'), body.children )
+      initial = text_body.pop(0).prettify()
+      content = u''
+      for child in text_body:
+         content += child.prettify() 
+      args.update(initial=initial)
+      args.update(content=content)
+      
+      # Alles zwischenspeichern
+      self.dic.update(**args)
+      
+      # Falls es noch weitere Seiten gibt...
+      more = map(lambda i:i.a['href'],filter(lambda i:i.a,
+              soup.findAll('li',{'class':'article-paging-list-item'})))
+      if more:
+        log.debug('Found %i more pages', len(more) )
+        self.more_url = more
+        self.has_more_pages = True
 
 def get_topics():
   '''
@@ -120,7 +130,7 @@ def get_topics():
   month:  1-12
   year:   vierstellige Jahreszahl
   '''
-  t = ('Topthemen','Politik','Panorama', 'Leben','Wirtschaft','Kultur','Wissen','Medien','Digital')
+  t = ('Topthemen','Politik','Panorama', 'Sport','Wirtschaft','Kultur','Wissen','Medien','Digital')
   topics = {}
   for top in t:
     topics[top] = "http://rss.sueddeutsche.de/%s" % top  

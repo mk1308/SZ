@@ -26,7 +26,8 @@ class Content:
   können. 
   '''
 
-  has_updated = False
+  has_more_pages = False
+  more_url = None
   dic = {}
   template_name = None
   bs4opts = {}  # Etwaige Optionen für BeautifulSoup
@@ -41,13 +42,15 @@ class Content:
     '''
     Gibt alle zwischengespeicherten Wertepaare zurück
     '''
-    if url and not self.has_updated:
-      log.debug('Cache is empty. Going to fetch %s', url )
-      soup = self.fetch_soup( url )
-      log.debug('Going to parse %s', soup.title.get_text() )
-      self.parse( soup )
+    if url:
+      self.more_url = [url]
+      while self.more_url:
+        href = self.more_url.pop(0)
+        log.debug('Going to fetch %s', href )
+        soup = self.fetch_soup( href )
+        self.parse( soup )
+      self.has_more_pages = False
       log.debug('Successfully parsed %s', soup.title.get_text() )
-      self.has_updated = True
     return self.dic
     
   def fetch_soup( self, fname ):
