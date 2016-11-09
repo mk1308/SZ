@@ -10,8 +10,7 @@ import logging
 from urllib import urlopen
 from bs4 import BeautifulSoup as BS
 
-log = logging.getLogger(__name__)
-logging.basicConfig()
+log = logging.getLogger('SZ.Content')
 
 class Content:
   '''

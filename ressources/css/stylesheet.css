@@ -11,6 +11,12 @@ body,div,h1,h2,h3,li,html,p,ul{
   margin:0;
   padding:0
 }
+h3{
+  font-family:SZ Sans,Neue Helvetica,Helvetica,sans-serif;
+  font-weight:700;
+  font-size:1.5em;
+  color:#ababab
+}
 a{
   color:inherit;
   text-decoration:underline

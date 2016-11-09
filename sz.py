@@ -11,8 +11,7 @@
 import logging, os.path as p
 from utils import Content
 
-log = logging.getLogger(__name__)
-logging.basicConfig()
+log = logging.getLogger('SZ.ContentParser')
 stylesheet = 'css/stylesheet.css'
 
 class IndexPage( Content ):
