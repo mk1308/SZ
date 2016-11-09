@@ -11,6 +11,7 @@ from urllib import urlopen
 from bs4 import BeautifulSoup as BS
 
 log = logging.getLogger(__name__)
+logging.basicConfig()
 
 class Content:
   '''

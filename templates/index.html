@@ -19,16 +19,11 @@
   <link rel="stylesheet" href="{{ url_for('static', filename=stylesheet) }}" type="text/css" />
 </head>
 
-<body style="background-color: rgb(238, 238, 238);">
+<body>
 
   {% include 'navbar.html' %}
 
-  <div class="chapter c-departments" style="background: rgb(255,255,255);
-	    padding: 20px 80px 0 80px;
-	    width: 960px;
-	    margin: 0 auto 50px auto;
-	    position: relative;
-    ">
+  <div class="o-global-wrapper c-departments">
 <!--    <img src="{{ logo }}"/>-->
 <!--    <h1 class="c-departments__title">{{ title }}</h1>
 -->    <p class="c-departments__subtitle">{{ title }}</p>
@@ -38,10 +33,10 @@
     <ul>
       {% for article in articles %}
       <li class="c-teaser">
-        <h3>
+        <h2>
           <span class="c-teaser__kicker">{{ article['author'] }}</span>
           <a class="c-teaser__headline" href="{{ url_for('get_article',article = article['href'] ) }}">{{ article['title'] }}</a>
-        </h3>
+        </h2>
 
         <p class="c-teaser__text">
           {% autoescape false %}

@@ -2,9 +2,6 @@
         font-family: SZ Sans,Neue Helvetica,Helvetica,sans-serif;
         background-color: #fff;
         color: #333;
-        *font: x-small;
-        font-size: 13px;
-        *font-size: small;
         line-height: 16px;
         margin: 0 auto;
         padding-bottom: 12px;
@@ -20,53 +17,54 @@
         width: 100%;
         position: sticky;top:0
         ">
- <nav class="header-navigation" style="width:970">
+ <nav class="header-navigation">
   <ul class="departments" id="header-departments">
-   <li style="display: inline-block;list-style: none;">
-    <img src="{{ url_for('static', filename='favicon.ico') }}" style="width:40px"/>
+   <li class="c-nav__item">
+     <img src="{{ url_for('static', filename='favicon.ico') }}" style="width:40px;vertical-align: middle;
+margin-right: 3em;"/>
    </li>
-   <li style="display: inline-block;list-style: none;">
-    <a class="nav-item-link" href="{{ url_for('get_topic',topic='Topthemen') }}">
+   <li class="c-nav__item" style="margin:0 1em 0 1em">
+    <a class="c-nav-item__link" href="{{ url_for('get_topic',topic='Topthemen') }}">
      Topthemen
     </a>
    </li>
-   <li style="display: inline-block;list-style: none;text-decoration:none">
-    <a class="nav-item-link" href="{{ url_for('get_topic',topic='Politik') }}">
+   <li class="c-nav__item" style="margin-right:1em">
+    <a class="c-nav-item__link" href="{{ url_for('get_topic',topic='Politik') }}">
      Politik
     </a>
    </li>
-   <li style="display: inline-block;list-style: none;text-decoration:none">
-    <a class="nav-item-link" href="{{ url_for('get_topic',topic='Wirtschaft') }}">
+   <li class="c-nav__item" style="margin-right:1em">
+    <a class="c-nav-item__link" href="{{ url_for('get_topic',topic='Wirtschaft') }}">
      Wirtschaft
     </a>
    </li>
-   <li style="display: inline-block;list-style: none;text-decoration:none">
-    <a class="nav-item-link" href="{{ url_for('get_topic',topic='Panorama') }}">
+   <li class="c-nav__item" style="margin-right:1em">
+    <a class="c-nav-item__link" href="{{ url_for('get_topic',topic='Panorama') }}">
      Panorama
     </a>
    </li>
-   <li style="display: inline-block;list-style: none;text-decoration:none">
-    <a class="nav-item-link" href="{{ url_for('get_topic',topic='Sport') }}">
+   <li class="c-nav__item" style="margin-right:1em">
+    <a class="c-nav-item__link" href="{{ url_for('get_topic',topic='Sport') }}">
      Sport
     </a>
    </li>
-   <li style="display: inline-block;list-style: none;text-decoration:none">
-    <a class="nav-item-link" href="{{ url_for('get_topic',topic='Kultur') }}">
+   <li class="c-nav__item" style="margin-right:1em">
+    <a class="c-nav-item__link" href="{{ url_for('get_topic',topic='Kultur') }}">
      Kultur
     </a>
    </li>
-   <li style="display: inline-block;list-style: none;text-decoration:none">
-    <a class="nav-item-link" href="{{ url_for('get_topic',topic='Medien') }}">
+   <li class="c-nav__item" style="margin-right:1em">
+    <a class="c-nav-item__link" href="{{ url_for('get_topic',topic='Medien') }}">
      Medien
     </a>
    </li>
-   <li style="display: inline-block;list-style: none;text-decoration:none">
-    <a class="nav-item-link" href="{{ url_for('get_topic',topic='Wissen') }}">
+   <li class="c-nav__item" style="margin-right:1em">
+    <a class="c-nav-item__link" href="{{ url_for('get_topic',topic='Wissen') }}">
      Wissen
     </a>
    </li>
-   <li style="display: inline-block;list-style: none;text-decoration:none">
-    <a class="nav-item-link" href="{{ url_for('get_topic',topic='Digital') }}">
+   <li class="c-nav__item">
+    <a class="c-nav-item__link" href="{{ url_for('get_topic',topic='Digital') }}">
      Digital
     </a>
    </li>

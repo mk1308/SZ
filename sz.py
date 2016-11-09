@@ -12,6 +12,8 @@ import logging, os.path as p
 from utils import Content
 
 log = logging.getLogger(__name__)
+logging.basicConfig()
+stylesheet = 'css/stylesheet.css'
 
 class IndexPage( Content ):
   """
@@ -19,7 +21,6 @@ class IndexPage( Content ):
   """
 
   template_name = 'index.html'
-  stylesheet_name = 'css/index_styles.css'
   bs4opts = dict(features='xml')
   log = logging.getLogger(__name__)
 
@@ -31,7 +32,7 @@ class IndexPage( Content ):
       title=soup.title.getText(),
       charset='utf8',
       builtdate = soup.lastBuildDate.getText(),
-      stylesheet = self.stylesheet_name
+      stylesheet = stylesheet
     )
     articles = []
     toc = soup.findAll('item')
@@ -63,7 +64,7 @@ class ArticlePage( Content ):
     '''
     args = dict(
         charset='utf8',
-        stylesheet='css/stylesheet.css'
+        stylesheet=stylesheet
 #        stylesheet_content = 'css/index_styles.css',
 #        stylesheet_foundation = 'css/foundation.css',
 #        js_foundation = 'js/vendor/foundation.js',

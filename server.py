@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ################################################################################
 #
-# Der Flask-Server wird nur gebraucht kann mit folgenden Optionen gestratet
+# Der Flask-Server kann mit folgenden Optionen gestratet
 # werden. 
 # 
 # Usage: python server.py [-p n] [--options 'key1=value1,...'] [-d] [-o]
@@ -14,82 +14,80 @@
 #
 ################################################################################
 
+import os.path as p, logging
+from flask import Flask, url_for, send_from_directory, render_template, request, redirect
 from sz import IndexPage, ArticlePage, get_topics
 
-dirname_tpl_res       = "ressources"
-tpl_entry_page        = "entry-page.html"
+resdir       = "ressources"
+curdir = p.abspath('.')
+font_folder = '%s/%s/fonts' % ( curdir, resdir )
+content=dict(issues=get_topics()) 
+
+'''
+Webapp definieren und Appserver starten
+'''
+
+app = Flask('SZ',static_folder= '%s/%s' % ( curdir, resdir))
+
+@app.route('/')
+def index():
+  '''
+  Lenkt auf die Topthemenseite
+  '''
+  return redirect( url_for('get_topic', topic="Topthemen"))
+
+@app.route('/res/<path>')
+def static_proxy(path):
+  '''
+  Alles unterhalb resdir
+  '''
+  # send_static_file will guess the correct MIME type
+  return app.send_static_file( path )
+
+@app.route('/sz/<topic>')
+def get_topic(topic):
+  '''
+  Gibt die Indexseite der Rubrik topic zurück
+  '''
+  issue = IndexPage()
+  cont = issue.get_content( content['issues'][topic] )
+  content['current'] = topic
+  content[topic]=cont
+  i=0
+  article_refs = map( lambda entry : (entry['href'], entry['link']), cont['articles'] )
+  while i < len(article_refs):
+    next_target, ntl = article_refs[ (i+1) % len(article_refs) ]
+    target, target_link = article_refs[ i ]
+    next_path = p.basename( next_target )
+    content[target] = ( next_path, target_link )
+    i+=1
+  response = render_template( issue.template_name, **cont )
+  return response
+
+@app.route('/artikel/<article>')
+def get_article(article):
+  '''
+  Liefert eine Artikelseite aus
+  '''
+  next, link = content[article]
+  article_i = ArticlePage( )
+  cont = article_i.get_content( content[article][1] )
+  cont.update(
+      next = next,
+      logo = url_for('static', filename="logofficiel-enlong.png"),
+      issues = content['issues'],
+      home = content[ 'current' ],
+  )  
+  return render_template( article_i.template_name, **cont )
+
+#  @app.route('/fonts/<fname>')
+#  def get_fonts(fname):
+#    return send_from_directory( font_folder, fname )
 
 if __name__=='__main__':
-  '''
-  Webapp definieren und Appserver starten
-  '''
-  import os.path as p
-  from flask import Flask, url_for, send_from_directory, render_template, request, redirect
-  
-  curdir = p.abspath('.')
-  font_folder = '%s/%s/fonts' % ( curdir, dirname_tpl_res )
-  app = Flask('SZ',static_folder= '%s/%s' % ( curdir, dirname_tpl_res))
-  content=dict(issues=get_topics()) 
-  
-  @app.route('/')
-  def index():
-    '''
-    Lenkt auf die Topthemenseite
-    '''
-    return redirect( url_for('get_topic', topic="Topthemen"))
-
-  @app.route('/res/<path>')
-  def static_proxy(path):
-    '''
-    Alles unterhalb template_ressources
-    '''
-    # send_static_file will guess the correct MIME type
-    return app.send_static_file( path )
-  
-  @app.route('/sz/<topic>')
-  def get_topic(topic):
-    '''
-    Gibt die Indexseite der Ausgabe mit Datum date zurück
-    '''
-    issue = IndexPage()
-    cont = issue.get_content( content['issues'][topic] )
-    content['current'] = topic
-    content[topic]=cont
-    i=0
-    article_refs = map( lambda entry : (entry['href'], entry['link']), cont['articles'] )
-    while i < len(article_refs):
-      next_target, ntl = article_refs[ (i+1) % len(article_refs) ]
-      target, target_link = article_refs[ i ]
-      next_path = p.basename( next_target )
-      content[target] = ( next_path, target_link )
-      i+=1
-    response = render_template( issue.template_name, **cont )
-    return response
-  
-  @app.route('/artikel/<article>')
-  def get_article(article):
-    '''
-    Liefert eine Artikelseite aus
-    '''
-    next, link = content[article]
-    article_i = ArticlePage( )
-    cont = article_i.get_content( content[article][1] )
-    cont.update(
-        next = next,
-        logo = url_for('static', filename="logofficiel-enlong.png"),
-        issues = content['issues'],
-        home = content[ 'current' ],
-    )  
-    return render_template( article_i.template_name, **cont )
-  
-  @app.route('/fonts/<fname>')
-  def get_fonts(fname):
-    return send_from_directory( font_folder, fname )
-
   # configure Flask logging
-  from logging import FileHandler, DEBUG, ERROR
-  logger = FileHandler('error.log')
-  app.logger.setLevel(ERROR)
+  logger = logging.FileHandler('error.log')
+  app.logger.setLevel(logging.ERROR)
   app.logger.addHandler(logger)
     
   # allow for server options
@@ -125,7 +123,7 @@ if __name__=='__main__':
   server_opts = dict(debug=opts.debug,port=opts.port)
   port = opts.port
   if opts.debug:
-    app.logger.setLevel( DEBUG )
+    app.logger.setLevel( logging.DEBUG )
   if opts.open: 
     server_opts.update(host='0.0.0.0')
   if opts.options:

@@ -9,17 +9,11 @@
 
   <title>{{ title }}</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for( 'static', filename = stylesheet ) }}" />
-  <link rel="stylesheet" type="text/css" href="{{ url_for( 'static', filename = "css/index_styles.css" ) }}" />
 </head>
 
-<body style="background-color: rgb(238, 238, 238);">
+<body>
   {% include 'navbar.html' %}
-  <div class="o-global-wrapper" style="background: rgb(255,255,255);
-	    padding: 20px 80px 0 80px;
-	    width: 960px;
-	    margin: 0 auto 50px auto;
-	    position: relative;
-    ">
+  <div class="o-global-wrapper">
     <ul class="c-nav">
       <li class="c-nav__overview" style="margin:0;list-style-type:none">
         <a href="{{ url_for( 'get_topic', topic=home ) }}">{{ home }}</a>
