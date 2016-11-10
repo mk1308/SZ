@@ -36,6 +36,27 @@ def index():
   '''
   return redirect( url_for('get_topic', topic="Topthemen"))
 
+@app.route('/artikel/')
+def get_1():
+  '''
+  Eigentlic Fehler 404
+  '''
+  return redirect( url_for('get_topic', topic="Topthemen"))
+
+@app.route('/sz/')
+def get_2():
+  '''
+  Eigentlic Fehler 404
+  '''
+  return redirect( url_for('get_topic', topic="Topthemen"))
+
+@app.route('/res/')
+def get_3():
+  '''
+  Eigentlic Fehler 404
+  '''
+  return redirect( url_for('get_topic', topic="Topthemen"))
+
 @app.route('/res/<path>')
 def static_proxy(path):
   '''
@@ -63,10 +84,6 @@ def get_topic(topic):
     i+=1
   response = render_template( issue.template_name, **cont )
   return response
-
-@app.route('/artikel/')
-def get_article1():
-  return redirect( url_for('get_topic', topic="Topthemen"))
 
 @app.route('/artikel/<article>')
 def get_article(article):
