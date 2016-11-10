@@ -13,6 +13,7 @@ from utils import Content
 
 log = logging.getLogger('SZ.ContentParser')
 stylesheet = 'css/stylesheet.css'
+baseurl = 'http://www.sueddeutsche.de'
 
 class IndexPage( Content ):
   """
@@ -22,6 +23,7 @@ class IndexPage( Content ):
   template_name = 'index.html'
   bs4opts = dict(features='xml')
   log = logging.getLogger(__name__)
+  baseurl = baseurl
 
   def parse( self, soup ):
     '''
@@ -56,6 +58,7 @@ class ArticlePage( Content ):
   '''
 
   template_name = 'article.html'
+  baseurl = baseurl
 
   def parse( self, soup ):
     '''

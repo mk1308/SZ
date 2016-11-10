@@ -64,21 +64,32 @@ def get_topic(topic):
   response = render_template( issue.template_name, **cont )
   return response
 
+@app.route('/artikel/')
+def get_article1():
+  return redirect( url_for('get_topic', topic="Topthemen"))
+
 @app.route('/artikel/<article>')
 def get_article(article):
   '''
   Liefert eine Artikelseite aus
   '''
-  next, link = content[article]
+  if request.args.get('link'):
+    app.logger.debug('Found %s', request.args.get('link'))
+    next, url = '', request.args.get('link')
+  else:
+    app.logger.debug('Found article %s', article )
+    next, url = content[article]
   article_i = ArticlePage( )
-  cont = article_i.get_content( content[article][1] )
+  cont = article_i.get_content( url )
   cont.update(
       next = next,
       logo = url_for('static', filename="logofficiel-enlong.png"),
       issues = content['issues'],
       home = content[ 'current' ],
   )  
-  return render_template( article_i.template_name, **cont )
+  response = render_template( article_i.template_name, **cont )
+  return article_i.replace_url( url_for, 'get_article', response )
+  
 
 #  @app.route('/fonts/<fname>')
 #  def get_fonts(fname):

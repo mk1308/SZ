@@ -6,7 +6,7 @@
 #
 ################################################################################
 
-import logging
+import logging, re, os.path as p
 from urllib import urlopen
 from bs4 import BeautifulSoup as BS
 
@@ -31,6 +31,7 @@ class Content:
   dic = {}
   template_name = None
   bs4opts = {}  # Etwaige Optionen für BeautifulSoup
+  baseurl = ''
 
   def __init__( self, **args):
     '''
@@ -76,4 +77,26 @@ class Content:
     soup: BeautifulSoup-Objekt. In der Regel von einer geholten Seite.
     '''
     pass
+
+  def replace_url( self, f_url_for, f_server, string ):
+    '''
+    Finde urls und ersetze diese geeignet
+    @f_url_for: dafür muss im richtigen Kontext url_for eingesetzt werden
+    @f_server:  das target in url_for
+    @string:    die gerenderte Seite
+    Gibt die gerenderte Seite zurück
+    '''
+    def repl( mtch ):
+      url = mtch.group(1)
+      if mtch.group(2).startswith('thema'):
+        # hack, weil thema Seiten keine Artikelseiten
+        href=url
+      else:
+        article = p.basename( mtch.group(2) )
+        href = f_url_for( f_server, article = article, link = url)
+      return "href=\"%s\"" % href
+    pat = 'href="(%s/(.*?))"' % self.baseurl
+    pattern = re.compile( pat )
+    return pattern.sub( repl, string )
+
 
